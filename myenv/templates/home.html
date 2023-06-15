@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Dosya İndirme Uygulaması{% endblock %}
+
+{% block content %}
+    <h1>Dosya İndirme Uygulaması</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div id="url-container">
+            <label for="url">Dosya URL'si:</label>
+            <input type="text" class="url-input" name="url" required>
+        </div>
+        <div>
+            <label for="file">Dosya Seç:</label>
+            <input type="file" id="file" name="file">
+        </div>
+        <button type="button" onclick="addUrlField()">URL Ekle</button>
+        <button type="submit">İndir</button>
+    </form>
+
+    {% for file in files %}
+    <div>
+        <h3>{{ file.name }}</h3>
+        <p>İndirme Durumu: {{ file.status }}</p>
+        <p>İndirme İlerlemesi: <span id="progress-{{ file.id }}">{{ file.progress }}%</span></p>
+    </div>
+    {% endfor %}
+
+    <script>
+        function addUrlField() {
+            const container = document.getElementById('url-container');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'url-input';
+            input.name = 'url';
+            input.required = true;
+            container.appendChild(input);
+        }
+
+        function updateProgress() {
+            const files = document.querySelectorAll('[id^="progress-"]');
+            files.forEach(file => {
+                const fileId = file.id.split('-')[1];
+                fetch('/progress', {
+                    method: 'POST',
+                    body: JSON.stringify({ file_id: fileId }),
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.progress !== null) {
+                        file.textContent = data.progress + '%';
+                    }
+                });
+            });
+        }
+
+        setInterval(updateProgress, 1000);
+    </script>
+{% endblock %}

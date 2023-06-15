@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Download Manager</title>
+</head>
+<body>
+  <nav>
+    <ul>
+      {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('home') }}">Ana Sayfa</a></li>
+        <li><a href="{{ url_for('logout') }}">Çıkış Yap</a></li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}">Giriş Yap</a></li>
+        <li><a href="{{ url_for('register') }}">Kayıt Ol</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flash-messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  
+  {% block content %}{% endblock %}
+</body>
+</html>

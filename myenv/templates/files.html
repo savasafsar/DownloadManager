@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>İndirilen Dosyalar</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>İndirilen Dosyalar</h1>
+    {% if files %}
+        <ul>
+            {% for file in files %}
+                <li>
+                    <a href="{{ url_for('download', file_id=file.id) }}">{{ file.name }}</a>
+                    {% if file.status == 'Completed' %}
+                        <span class="status-completed">Tamamlandı</span>
+                    {% else %}
+                        <span class="status-inprogress">Devam Ediyor</span>
+                        <span class="progress">{{ file.progress }}%</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Henüz indirilen dosya bulunmamaktadır.</p>
+    {% endif %}
+    <p><a href="{{ url_for('home') }}">Ana sayfaya dön</a>.</p>
+</body>
+</html>
